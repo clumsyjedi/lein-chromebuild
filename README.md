@@ -1,11 +1,11 @@
-# chromebuild
+# lein-chromebuild
 
 A Leiningen plugin to build Chrome browser extensions.
 
 ## Usage
 
 If you're working on Chrome extensions in ClojureScript then this plugin
-applied the familiar syntax of lein-cljsbuild to the rest of the Chrome
+applies the familiar syntax of lein-cljsbuild to the rest of the Chrome
 extension paths.
 
 If you're looking for an entry point to setting up a Chrome extension project,

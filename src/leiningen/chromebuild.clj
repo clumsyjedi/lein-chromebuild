@@ -4,7 +4,14 @@
             [leiningen.cljsbuild :refer [cljsbuild]]
             [cljsbuild.util]
             [clojure.java.io :as io]
-    ))
+            [clojure-watch.core :refer [start-watch]]))
+
+(defn create-watch [path callback-fn]
+  {:path path
+   :event-types [:create :modify :delete]
+   :bootstrap (fn [path] (println "watching " path))
+   :callback (fn [_ _] (callback-fn))
+   :options {:recursive true}})
 
 (defn copy-dir [src-dir target-dir]
   (.mkdirs (io/file target-dir))
@@ -15,23 +22,47 @@
 
 (defn- once
   [project 
-   {:keys [resource-paths unpacked-target-path]
-    :or {resource-paths ["resources/js" "resources/html" "resources/images"] 
-         unpacked-target-path "target/unpacked"}} 
+   {{:keys [resource-paths unpacked-target-path] 
+     :or {resource-paths ["resources/js" "resources/html" "resources/images"] 
+          unpacked-target-path "target/unpacked"}
+     :as chromebuild} :chromebuild
+    :as opts} 
    args]
   (doseq [src-dir resource-paths]
     (copy-dir src-dir unpacked-target-path))
   (cljsbuild project "once")
-  (println "built extension to" unpacked-target-path))
+  (println "Built extension to" unpacked-target-path))
 
 
-(defn- auto [project options args]
-  (cljsbuild.util/once-every 1000 "chromebuild" #(once project options args)))
+(defn- auto 
+  [project 
+   {{:keys [resource-paths] 
+     :or {resource-paths ["resources/js" "resources/html" "resources/images"]}} 
+    :chromebuild
+    :as opts}
+   args]
+  (once project opts args)
+  (start-watch (map #(create-watch % (fn [] (once project opts args))) 
+                    (concat (:source-paths project) resource-paths))))
 
-(defn- clean [])
+(defn- clean
+  [project 
+   {{:keys [unpacked-target-path] :or {unpacked-target-path "target/unpacked"}
+     :as chromebuild} :chromebuild
+    :as opts} 
+   args]
+  (cljsbuild project "clean")
+  (letfn [(rm [file]
+            (println "deleting" file)
+            (if (.isDirectory file)
+              (do (doseq [f (.listFiles file)] 
+                    (rm f))
+                  (io/delete-file file))
+              (io/delete-file file)))]
+    (rm (io/file unpacked-target-path))))
 
 (defn- extract-options [project]
-  (:chromebuild project))
+  (select-keys project [:chromebuild :cljsbuild]))
 
 (defn chromebuild
   "Run the chromebuild plugin."
@@ -46,7 +77,7 @@
      (case subtask
        "once" (once project options args)
        "auto" (auto project options args)
-       "clean" (clean project options)
+       "clean" (clean project options args)
        (do
          (println
            "Subtask" (str \" subtask \") "not found."

@@ -5,5 +5,6 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :eval-in-leiningen true
   :dependencies [[lein-cljsbuild "1.0.1"]
-                                  [cljsbuild "1.0.3"]]
+                 [cljsbuild "1.0.3"]
+                 [clojure-watch "0.1.9"]]
   )

@@ -9,7 +9,7 @@ applies the familiar syntax of lein-cljsbuild to the rest of the Chrome
 extension paths.
 
 If you're looking for an entry point to setting up a Chrome extension project,
-have a look at the chrome-extension lein template.
+have a look at the [chrome-extension lein template](https://github.com/clumsyjedi/lein-chrome-extension).
 
 Assuming your non-cljs files are located in resources/ - the following config 
 targets them for bundling in target/unpacked alongside the compiled JS.

@@ -1,4 +1,4 @@
-(defproject lein-chromebuild "0.2.0"
+(defproject lein-chromebuild "0.2.1"
   :description "A leiningen plugin for building Chrome browser extensions"
   :url "https://github.com/clumsyjedi/lein-chromebuild"
   :license {:name "Eclipse Public License"

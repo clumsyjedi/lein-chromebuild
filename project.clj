@@ -1,4 +1,4 @@
-(defproject lein-chromebuild "0.1.0"
+(defproject lein-chromebuild "0.2.0"
   :description "A leiningen plugin for building Chrome browser extensions"
   :url "https://github.com/clumsyjedi/lein-chromebuild"
   :license {:name "Eclipse Public License"
@@ -6,4 +6,4 @@
   :eval-in-leiningen true
   :dependencies [[lein-cljsbuild "1.0.1"]
                  [cljsbuild "1.0.3"]
-                 [clojure-watch "0.1.9"]])
+                 [juxt/dirwatch  "0.2.2"]])

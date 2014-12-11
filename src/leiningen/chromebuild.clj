@@ -4,14 +4,7 @@
             [leiningen.cljsbuild :refer [cljsbuild]]
             [cljsbuild.util]
             [clojure.java.io :as io]
-            [clojure-watch.core :refer [start-watch]]))
-
-(defn create-watch [path callback-fn]
-  {:path path
-   :event-types [:create :modify :delete]
-   :bootstrap (fn [path] (println "watching " path))
-   :callback (fn [_ _] (callback-fn))
-   :options {:recursive true}})
+            [juxt.dirwatch :refer  (watch-dir)]))
 
 (defn copy-dir [src-dir target-dir]
   (.mkdirs (io/file target-dir))
@@ -42,8 +35,10 @@
     :as opts}
    args]
   (once project opts args)
-  (start-watch (map #(create-watch % (fn [] (once project opts args))) 
-                    (concat (:source-paths project) resource-paths))))
+  (doseq [path (concat (:source-paths project) resource-paths)]
+    (watch-dir (fn [& _] (once project opts args))
+               (io/file path)))
+  @(future (loop [] (Thread/sleep 1000) (recur))))
 
 (defn- clean
   [project 

@@ -40,6 +40,10 @@ To cleanup files created by the above operations:
 
     $ lein chromebuild clean
 
+To create a ZIP file for publishing a Chrome extension on Chrome Web Store:
+
+    $ lein chromebuild zip
+
 ## License
 
 Copyright © 2014 Frazer Irving

@@ -16,7 +16,7 @@ targets them for bundling in target/unpacked alongside the compiled JS.
 
 ```clj
 (defproject my-project "0.1.0"
-  :plugins [[lein-chromebuild "0.2.1"]]
+  :plugins [[lein-chromebuild "0.3.0"]]
   :cljsbuild {:builds {:main
                         {:source-paths ["src"]
                          :compiler {:output-to "target/unpacked/my_project.js"
